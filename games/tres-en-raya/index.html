@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="es" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, viewport-fit=cover" />
+  <title>Tres en raya · Ganes</title>
+  <link rel="stylesheet" href="../../assets/css/base.css" />
+  <link rel="stylesheet" href="../../assets/css/game.css" />
+  <style>
+    .ttt { grid-template-columns: repeat(3, 1fr); width: min(90vw, 360px); }
+    .ttt .cell.x { color: var(--accent); }
+    .ttt .cell.o { color: var(--accent-2); }
+    .ttt .cell.win { background: rgba(0, 229, 255, 0.18); }
+  </style>
+</head>
+<body>
+  <header class="top-bar">
+    <a class="back-link" href="../../">← Volver</a>
+    <div class="brand">❌ Tres en raya</div>
+    <div class="top-actions">
+      <button data-sound-toggle>🔊</button>
+      <button data-theme-toggle>☀︎</button>
+    </div>
+  </header>
+
+  <main class="game-shell">
+    <div class="modes">
+      <button class="mode-btn active" data-mode="ai">vs CPU</button>
+      <button class="mode-btn" data-mode="2p">2 jugadores</button>
+    </div>
+
+    <div class="scoreboard">
+      <div class="score-box"><div class="label">X</div><div class="value" id="winsX">0</div></div>
+      <div class="score-box"><div class="label">Empates</div><div class="value" id="draws">0</div></div>
+      <div class="score-box"><div class="label">O</div><div class="value" id="winsO">0</div></div>
+    </div>
+
+    <div id="board" class="board-grid ttt"></div>
+
+    <div class="message" id="msg">Turno de X</div>
+
+    <div class="controls">
+      <button id="reset" class="primary">Nueva partida</button>
+    </div>
+  </main>
+
+  <script type="module" src="./tictactoe.js"></script>
+</body>
+</html>

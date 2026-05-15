@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="es" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, viewport-fit=cover" />
+  <title>2048 · Ganes</title>
+  <link rel="stylesheet" href="../../assets/css/base.css" />
+  <link rel="stylesheet" href="../../assets/css/game.css" />
+  <style>
+    .grid-2048 {
+      width: min(96vw, 460px);
+      aspect-ratio: 1 / 1;
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 10px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-template-rows: repeat(4, 1fr);
+      gap: 10px;
+      box-shadow: var(--shadow);
+      touch-action: none;
+      user-select: none;
+    }
+    .tile {
+      display: flex; align-items: center; justify-content: center;
+      background: var(--surface);
+      border-radius: 10px;
+      font-weight: 800;
+      font-size: clamp(18px, 5vw, 30px);
+      color: var(--fg);
+      transition: transform .08s ease;
+    }
+    .tile[data-v="0"] { color: transparent; background: rgba(255,255,255,0.03); }
+    .tile[data-v="2"] { background: #2a3556; }
+    .tile[data-v="4"] { background: #36436e; }
+    .tile[data-v="8"] { background: #4a3a8a; color: #fff; }
+    .tile[data-v="16"] { background: #6a3aa0; color: #fff; }
+    .tile[data-v="32"] { background: #903ab2; color: #fff; }
+    .tile[data-v="64"] { background: #b53aa3; color: #fff; }
+    .tile[data-v="128"] { background: #cc4080; color: #fff; font-size: clamp(16px, 4.5vw, 26px); }
+    .tile[data-v="256"] { background: #df4860; color: #fff; font-size: clamp(16px, 4.5vw, 26px); }
+    .tile[data-v="512"] { background: #ef5945; color: #fff; font-size: clamp(16px, 4.5vw, 26px); }
+    .tile[data-v="1024"] { background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: #fff; font-size: clamp(14px, 4vw, 22px); }
+    .tile[data-v="2048"] { background: linear-gradient(135deg, #ffd54a, #ff7a00); color: #1a0; font-size: clamp(14px, 4vw, 22px); }
+  </style>
+</head>
+<body>
+  <header class="top-bar">
+    <a class="back-link" href="../../">← Volver</a>
+    <div class="brand">🔢 2048</div>
+    <div class="top-actions">
+      <button data-sound-toggle>🔊</button>
+      <button data-theme-toggle>☀︎</button>
+    </div>
+  </header>
+
+  <main class="game-shell">
+    <div class="scoreboard">
+      <div class="score-box"><div class="label">Puntos</div><div class="value" id="score">0</div></div>
+      <div class="score-box"><div class="label">Récord</div><div class="value" id="best">0</div></div>
+    </div>
+
+    <div id="grid" class="grid-2048"></div>
+
+    <div class="message" id="msg"></div>
+
+    <div class="controls">
+      <button id="restart" class="primary">Nueva partida</button>
+      <button id="undo">Deshacer</button>
+    </div>
+
+    <p class="hint">Flechas en escritorio · desliza el dedo en móvil. Combina números iguales hasta 2048.</p>
+  </main>
+
+  <script type="module" src="./game2048.js"></script>
+</body>
+</html>

@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="es" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, viewport-fit=cover" />
+  <title>Snake · Ganes</title>
+  <link rel="stylesheet" href="../../assets/css/base.css" />
+  <link rel="stylesheet" href="../../assets/css/game.css" />
+</head>
+<body>
+  <header class="top-bar">
+    <a class="back-link" href="../../">← Volver</a>
+    <div class="brand">🐍 Snake</div>
+    <div class="top-actions">
+      <button data-sound-toggle>🔊</button>
+      <button data-theme-toggle>☀︎</button>
+    </div>
+  </header>
+
+  <main class="game-shell">
+    <div class="scoreboard">
+      <div class="score-box"><div class="label">Puntos</div><div class="value" id="score">0</div></div>
+      <div class="score-box"><div class="label">Récord</div><div class="value" id="best">0</div></div>
+    </div>
+
+    <div class="board-wrap">
+      <canvas id="board" class="board" width="400" height="400" aria-label="Tablero de Snake"></canvas>
+    </div>
+
+    <div class="message" id="msg"></div>
+
+    <div class="controls">
+      <button id="start" class="primary">Iniciar</button>
+      <button id="pause">Pausa</button>
+    </div>
+
+    <p class="hint">Flechas / WASD en escritorio · desliza el dedo sobre el tablero en móvil.</p>
+  </main>
+
+  <script type="module" src="./snake.js"></script>
+</body>
+</html>
