@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="es" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, viewport-fit=cover" />
+  <title>Memorice · Ganes</title>
+  <link rel="stylesheet" href="../../assets/css/base.css" />
+  <link rel="stylesheet" href="../../assets/css/game.css" />
+  <style>
+    .memo { grid-template-columns: repeat(4, 1fr); width: min(96vw, 480px); }
+    .memo .cell { background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: transparent; }
+    .memo .cell.flipped { background: var(--surface); color: var(--fg); }
+    .memo .cell.matched { background: rgba(74, 222, 128, 0.18); color: var(--fg); cursor: default; }
+  </style>
+</head>
+<body>
+  <header class="top-bar">
+    <a class="back-link" href="../../">← Volver</a>
+    <div class="brand">🧠 Memorice</div>
+    <div class="top-actions">
+      <button data-sound-toggle>🔊</button>
+      <button data-theme-toggle>☀︎</button>
+    </div>
+  </header>
+
+  <main class="game-shell">
+    <div class="scoreboard">
+      <div class="score-box"><div class="label">Movimientos</div><div class="value" id="moves">0</div></div>
+      <div class="score-box"><div class="label">Pares</div><div class="value" id="pairs">0 / 8</div></div>
+      <div class="score-box"><div class="label">Mejor</div><div class="value" id="best">—</div></div>
+    </div>
+
+    <div id="board" class="board-grid memo"></div>
+
+    <div class="message" id="msg"></div>
+
+    <div class="controls">
+      <button id="reset" class="primary">Nueva partida</button>
+    </div>
+
+    <p class="hint">Encuentra los 8 pares. Cuanto menos movimientos, mejor.</p>
+  </main>
+
+  <script type="module" src="./memorice.js"></script>
+</body>
+</html>

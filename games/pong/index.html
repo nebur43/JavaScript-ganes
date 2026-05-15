@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="es" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, viewport-fit=cover" />
+  <title>Pong · Ganes</title>
+  <link rel="stylesheet" href="../../assets/css/base.css" />
+  <link rel="stylesheet" href="../../assets/css/game.css" />
+</head>
+<body>
+  <header class="top-bar">
+    <a class="back-link" href="../../">← Volver</a>
+    <div class="brand">🏓 Pong</div>
+    <div class="top-actions">
+      <button data-sound-toggle>🔊</button>
+      <button data-theme-toggle>☀︎</button>
+    </div>
+  </header>
+
+  <main class="game-shell">
+    <div class="modes">
+      <button class="mode-btn active" data-mode="cpu">vs CPU</button>
+      <button class="mode-btn" data-mode="2p">2 jugadores</button>
+    </div>
+
+    <div class="scoreboard">
+      <div class="score-box"><div class="label">Jugador</div><div class="value" id="p1">0</div></div>
+      <div class="score-box"><div class="label">Récord</div><div class="value" id="best">0</div></div>
+      <div class="score-box"><div class="label">Rival</div><div class="value" id="p2">0</div></div>
+    </div>
+
+    <div class="board-wrap">
+      <canvas id="board" class="board" width="640" height="400" aria-label="Tablero de Pong"></canvas>
+    </div>
+
+    <div class="message" id="msg"></div>
+
+    <div class="controls">
+      <button id="start" class="primary">Iniciar</button>
+    </div>
+
+    <p class="hint">↑/↓ o W/S · en móvil arrastra el dedo sobre tu mitad del tablero. Primer en llegar a 7.</p>
+  </main>
+
+  <script type="module" src="./pong.js"></script>
+</body>
+</html>

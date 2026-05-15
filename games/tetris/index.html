@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="es" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, viewport-fit=cover" />
+  <title>Tetris · Ganes</title>
+  <link rel="stylesheet" href="../../assets/css/base.css" />
+  <link rel="stylesheet" href="../../assets/css/game.css" />
+</head>
+<body>
+  <header class="top-bar">
+    <a class="back-link" href="../../">← Volver</a>
+    <div class="brand">🟦 Tetris</div>
+    <div class="top-actions">
+      <button data-sound-toggle>🔊</button>
+      <button data-theme-toggle>☀︎</button>
+    </div>
+  </header>
+
+  <main class="game-shell">
+    <div class="scoreboard">
+      <div class="score-box"><div class="label">Puntos</div><div class="value" id="score">0</div></div>
+      <div class="score-box"><div class="label">Líneas</div><div class="value" id="lines">0</div></div>
+      <div class="score-box"><div class="label">Nivel</div><div class="value" id="level">1</div></div>
+      <div class="score-box"><div class="label">Récord</div><div class="value" id="best">0</div></div>
+    </div>
+
+    <div class="board-wrap">
+      <canvas id="board" class="board" width="300" height="600" aria-label="Tablero de Tetris"></canvas>
+    </div>
+
+    <div class="message" id="msg"></div>
+
+    <div class="controls">
+      <button id="start" class="primary">Iniciar</button>
+      <button id="pause">Pausa</button>
+    </div>
+
+    <div id="dpad"></div>
+
+    <p class="hint">←/→ mover · ↑ rotar · ↓ acelerar · espacio: hard drop. En móvil usa el D-pad (botón central rota, mantén ▼ para acelerar).</p>
+  </main>
+
+  <script type="module" src="./tetris.js"></script>
+</body>
+</html>
