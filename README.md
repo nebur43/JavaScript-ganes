@@ -2,6 +2,8 @@
 
 Colección de 8 mini-juegos clásicos en JavaScript vanilla, jugables tanto en móvil (controles táctiles) como en escritorio (teclado/ratón). Sin dependencias, sin build step.
 
+**[Jugar ahora →](https://nebur43.github.io/JavaScript-ganes/)**
+
 ## Juegos incluidos
 
 | Juego          | Controles desktop                | Controles móvil                  |
