@@ -4,6 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, viewport-fit=cover" />
   <title>Ahorcado · Ganes</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔤</text></svg>" />
   <link rel="stylesheet" href="../../assets/css/base.css" />
   <link rel="stylesheet" href="../../assets/css/game.css" />
   <style>
@@ -34,10 +35,22 @@
       font-weight: 700;
       text-transform: uppercase;
       font-size: 15px;
+      min-height: 44px;
     }
-    .keyboard button.used { opacity: .35; cursor: default; }
+    .keyboard button.used { opacity: .35; cursor: default; pointer-events: none; }
     .keyboard button.hit { background: rgba(74, 222, 128, 0.25); border-color: var(--good); }
     .keyboard button.miss { background: rgba(255, 93, 108, 0.18); border-color: var(--bad); }
+    /* En móvil: 6 columnas para botones más grandes */
+    @media (max-width: 420px) {
+      .keyboard {
+        grid-template-columns: repeat(6, 1fr);
+        gap: 5px;
+      }
+      .keyboard button {
+        padding: 11px 0;
+        font-size: 14px;
+      }
+    }
     svg.gallows { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 6px; }
   </style>
 </head>

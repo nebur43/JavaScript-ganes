@@ -4,8 +4,71 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, viewport-fit=cover" />
   <title>Pong · Ganes</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏓</text></svg>" />
   <link rel="stylesheet" href="../../assets/css/base.css" />
   <link rel="stylesheet" href="../../assets/css/game.css" />
+  <style>
+    /* ── Móvil: UI compacta, hint oculto, scroll natural ── */
+    @media (pointer: coarse) {
+      .hint { display: none; }
+      main.game-shell { padding: 8px 12px env(safe-area-inset-bottom, 8px); gap: 6px; }
+    }
+    /* Landscape móvil: compactar aún más */
+    @media (pointer: coarse) and (max-height: 500px) {
+      .score-box { padding: 4px 8px; }
+      .scoreboard { gap: 4px; }
+      .modes .mode-btn { min-height: 34px; padding: 4px 10px; font-size: 13px; }
+      .controls .primary { min-height: 38px; padding: 6px 20px; }
+      main.game-shell { gap: 4px; padding-top: 6px; }
+    }
+
+    /* ── Pantalla completa: canvas ocupa TODA la pantalla, sin margen ni padding ── */
+    :fullscreen body,
+    :-webkit-full-screen body {
+      height: 100dvh; overflow: hidden;
+      display: flex; flex-direction: column;
+      padding: 0; margin: 0;
+    }
+    :fullscreen header.top-bar,
+    :-webkit-full-screen header.top-bar { display: none; }
+
+    :fullscreen main.game-shell,
+    :-webkit-full-screen main.game-shell {
+      /* Anular margin:0 auto, max-width:720px y align-items:center de game.css */
+      flex: 1; min-height: 0;
+      width: 100%; max-width: none;
+      margin: 0; padding: 0; gap: 0;
+      display: flex; flex-direction: column;
+      align-items: stretch;
+      overflow: hidden;
+    }
+    /* Ocultar toda la UI — solo queda el canvas */
+    :fullscreen .modes,
+    :fullscreen .scoreboard,
+    :fullscreen .controls,
+    :fullscreen .message,
+    :fullscreen .hint,
+    :-webkit-full-screen .modes,
+    :-webkit-full-screen .scoreboard,
+    :-webkit-full-screen .controls,
+    :-webkit-full-screen .message,
+    :-webkit-full-screen .hint { display: none !important; }
+
+    :fullscreen .board-wrap,
+    :-webkit-full-screen .board-wrap {
+      flex: 1; min-height: 0;
+      width: 100%; margin: 0; padding: 0;
+      display: block; overflow: hidden;
+    }
+    /* El canvas se queda sin bordes/sombra en fullscreen */
+    :fullscreen #board,
+    :-webkit-full-screen #board {
+      display: block;
+      border: none !important;
+      border-radius: 0 !important;
+      box-shadow: none !important;
+    }
+  </style>
 </head>
 <body>
   <header class="top-bar">
@@ -21,12 +84,13 @@
     <div class="modes">
       <button class="mode-btn active" data-mode="cpu">vs CPU</button>
       <button class="mode-btn" data-mode="2p">2 jugadores</button>
+      <button id="btn-fullscreen" class="mode-btn" aria-label="Pantalla completa" title="Pantalla completa">⛶ Pantalla</button>
     </div>
 
     <div class="scoreboard">
-      <div class="score-box"><div class="label">Jugador</div><div class="value" id="p1">0</div></div>
+      <div class="score-box"><div class="label" id="lbl-p1">Jugador</div><div class="value" id="p1">0</div></div>
       <div class="score-box"><div class="label">Récord</div><div class="value" id="best">0</div></div>
-      <div class="score-box"><div class="label">Rival</div><div class="value" id="p2">0</div></div>
+      <div class="score-box"><div class="label" id="lbl-p2">Rival</div><div class="value" id="p2">0</div></div>
     </div>
 
     <div class="board-wrap">
@@ -39,7 +103,9 @@
       <button id="start" class="primary">Iniciar</button>
     </div>
 
-    <p class="hint">↑/↓ o W/S · en móvil arrastra el dedo sobre tu mitad del tablero. Primer en llegar a 7.</p>
+    <p class="hint" id="hint-text">
+      J1: W/S · J2: ↑/↓ · en móvil arrastra el dedo sobre tu mitad del tablero. Primero en llegar a 7.
+    </p>
   </main>
 
   <script type="module" src="./pong.js"></script>

@@ -172,17 +172,42 @@ function evaluate(b) {
   return score;
 }
 
+function getCss(name) {
+  return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+}
+
+let hoverCol = -1;
+
 function draw() {
-  ctx.fillStyle = '#1f2950';
+  const boardBg = getCss('--bg-2');
+  const emptyColor = getCss('--surface');
+  const redColor = getCss('--bad');
+
+  ctx.fillStyle = boardBg;
   ctx.fillRect(0, 0, W, H);
+
+  // Indicador de columna hover (solo si la partida sigue)
+  if (!over && hoverCol >= 0) {
+    const hc = hoverCol * CELL + CELL / 2;
+    ctx.fillStyle = turn === RED ? 'rgba(255,93,108,0.2)' : 'rgba(250,204,21,0.2)';
+    ctx.fillRect(hoverCol * CELL, 0, CELL, H);
+    // Mini pieza flotante en la parte superior
+    ctx.beginPath();
+    ctx.arc(hc, CELL * 0.4, CELL * 0.35, 0, Math.PI * 2);
+    ctx.fillStyle = turn === RED ? redColor : '#facc15';
+    ctx.globalAlpha = 0.7;
+    ctx.fill();
+    ctx.globalAlpha = 1;
+  }
+
   for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++) {
     const cx = c * CELL + CELL / 2;
     const cy = r * CELL + CELL / 2;
-    let color = '#0c1230';
-    if (board[r][c] === RED) color = '#ff5d6c';
+    let color = emptyColor;
+    if (board[r][c] === RED) color = redColor;
     else if (board[r][c] === YEL) color = '#facc15';
     ctx.beginPath();
-    ctx.arc(cx, cy, CELL * 0.4, 0, Math.PI * 2);
+    ctx.arc(cx, cy, CELL * 0.42, 0, Math.PI * 2);
     ctx.fillStyle = color;
     ctx.fill();
     if (winningLine && winningLine.some(([wr, wc]) => wr === r && wc === c)) {
@@ -192,6 +217,15 @@ function draw() {
     }
   }
 }
+
+canvas.addEventListener('pointermove', (e) => {
+  const rect = canvas.getBoundingClientRect();
+  const x = e.clientX - rect.left;
+  hoverCol = Math.floor((x / rect.width) * COLS);
+  if (hoverCol < 0 || hoverCol >= COLS) hoverCol = -1;
+  draw();
+});
+canvas.addEventListener('pointerleave', () => { hoverCol = -1; draw(); });
 
 canvas.addEventListener('pointerdown', (e) => {
   const rect = canvas.getBoundingClientRect();

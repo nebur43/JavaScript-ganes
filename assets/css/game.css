@@ -2,8 +2,9 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 14px;
-  padding: 16px clamp(12px, 3vw, 24px) 30px;
+  gap: 12px;
+  padding: 14px clamp(12px, 3vw, 24px);
+  padding-bottom: calc(24px + env(safe-area-inset-bottom));
   max-width: 720px;
   margin: 0 auto;
 }
@@ -12,7 +13,7 @@
 
 .scoreboard {
   display: flex;
-  gap: 14px;
+  gap: 10px;
   flex-wrap: wrap;
   justify-content: center;
   width: 100%;
@@ -22,11 +23,21 @@
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   padding: 8px 14px;
-  min-width: 90px;
+  min-width: 80px;
   text-align: center;
+  flex: 1 1 80px;
+  max-width: 140px;
 }
-.score-box .label { font-size: 11px; color: var(--fg-dim); text-transform: uppercase; letter-spacing: .8px; }
+.score-box .label { font-size: 10px; color: var(--fg-dim); text-transform: uppercase; letter-spacing: .8px; }
 .score-box .value { font-weight: 700; font-size: 20px; }
+
+/* Animación del score al cambiar */
+@keyframes scorePop {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.25); color: var(--accent); }
+  100% { transform: scale(1); }
+}
+.score-box .value.pop { animation: scorePop .3s ease; }
 
 .board-wrap {
   display: flex;
@@ -50,35 +61,55 @@ canvas.board {
   gap: 10px;
   flex-wrap: wrap;
   justify-content: center;
+  width: 100%;
 }
-.controls button { min-width: 120px; }
+.controls button {
+  min-width: 120px;
+  min-height: 48px;
+  font-size: 15px;
+  flex: 1 1 120px;
+  max-width: 200px;
+}
 
 .message {
-  min-height: 22px;
+  min-height: 24px;
   text-align: center;
   color: var(--accent);
   font-weight: 600;
+  font-size: 15px;
 }
 
-.hint { color: var(--fg-dim); font-size: 13px; text-align: center; }
+.hint {
+  color: var(--fg-dim);
+  font-size: 13px;
+  text-align: center;
+  line-height: 1.5;
+  max-width: 480px;
+  margin: 0;
+}
 
-/* D-pad virtual */
+/* D-pad virtual — tamaño generoso para dedos */
 .dpad {
   display: grid;
-  grid-template-columns: 60px 60px 60px;
-  grid-template-rows: 60px 60px 60px;
+  grid-template-columns: 68px 68px 68px;
+  grid-template-rows: 68px 68px 68px;
   gap: 8px;
-  margin-top: 8px;
+  margin-top: 6px;
+  /* Solo visible en pantallas táctiles; en desktop se oculta */
 }
 .dpad .dpad-btn {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 12px;
-  font-size: 20px;
+  border-radius: 14px;
+  font-size: 22px;
   user-select: none;
   -webkit-user-select: none;
   touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  transition: background .1s ease, transform .08s ease;
+  min-height: unset; /* override base.css */
 }
+.dpad .dpad-btn:active { background: var(--bg-2); transform: scale(0.93); }
 .dpad .dpad-up    { grid-area: 1 / 2; }
 .dpad .dpad-left  { grid-area: 2 / 1; }
 .dpad .dpad-right { grid-area: 2 / 3; }
@@ -90,6 +121,13 @@ canvas.board {
   border: none;
   font-weight: 700;
   border-radius: 50%;
+  font-size: 20px;
+}
+.dpad .dpad-action:active { opacity: .8; transform: scale(0.93); }
+
+/* En escritorio (pointer mouse), ocultar el D-pad */
+@media (hover: hover) and (pointer: fine) {
+  .dpad { display: none; }
 }
 
 /* Tableros DOM (memorice, conecta 4, tres en raya) */
@@ -98,6 +136,7 @@ canvas.board {
   gap: 6px;
   width: min(96vw, 480px);
   user-select: none;
+  -webkit-user-select: none;
 }
 .cell {
   background: var(--bg-2);
@@ -110,10 +149,32 @@ canvas.board {
   font-weight: 700;
   aspect-ratio: 1 / 1;
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
   transition: background .12s ease, transform .08s ease;
 }
 .cell:hover { background: var(--surface); }
+.cell:active { transform: scale(0.93); }
 .cell.disabled { cursor: default; }
+@media (hover: none) {
+  .cell:hover { background: var(--bg-2); }
+}
+
+/* Resalta celdas ganadoras */
+.cell.win {
+  background: rgba(74, 222, 128, 0.25);
+  border-color: var(--good);
+  animation: winPulse .5s ease;
+}
+@keyframes winPulse {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+/* Tres en raya: colores para X y O */
+.cell.x { color: var(--accent); }
+.cell.o { color: var(--accent-2); }
 
 .back-link {
   display: inline-flex;
@@ -121,6 +182,9 @@ canvas.board {
   gap: 6px;
   color: var(--fg-dim);
   font-size: 14px;
+  padding: 6px 4px;
+  min-height: 44px;
+  -webkit-tap-highlight-color: transparent;
 }
 .back-link:hover { color: var(--accent); text-decoration: none; }
 
@@ -131,9 +195,19 @@ canvas.board {
   flex-wrap: wrap;
   justify-content: center;
 }
-.mode-btn { padding: 6px 12px; font-size: 13px; }
+.mode-btn {
+  padding: 8px 16px;
+  font-size: 13px;
+  min-height: 40px;
+  -webkit-tap-highlight-color: transparent;
+}
 .mode-btn.active {
   background: linear-gradient(135deg, var(--accent), var(--accent-2));
   color: #fff;
   border-color: transparent;
+}
+
+/* Ocultar .hint en pantallas muy pequeñas para ahorrar espacio */
+@media (max-height: 640px) and (max-width: 480px) {
+  .hint { display: none; }
 }

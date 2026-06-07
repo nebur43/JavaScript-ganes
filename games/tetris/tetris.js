@@ -20,9 +20,12 @@ const msgEl = document.getElementById('msg');
 let CELL = 30, CSS_W = 300, CSS_H = 600;
 function fit() {
   const maxW = Math.min(window.innerWidth - 32, 360);
-  const maxH = window.innerHeight - 300;
+  // En táctil reservamos más espacio para el D-pad (≈240px) y controles (≈60px)
+  const hasFinePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  const reservedH = hasFinePointer ? 240 : 380;
+  const maxH = window.innerHeight - reservedH;
   CELL = Math.floor(Math.min(maxW / COLS, maxH / ROWS, 32));
-  if (CELL < 16) CELL = 16;
+  if (CELL < 14) CELL = 14;
   CSS_W = CELL * COLS;
   CSS_H = CELL * ROWS;
   const dpr = window.devicePixelRatio || 1;
@@ -44,7 +47,7 @@ const SHAPES = {
 };
 const KEYS = Object.keys(SHAPES);
 
-let grid, piece, score, lines, level, dropMs, last, alive, paused, bag;
+let grid, piece, score, lines, level, dropMs, last, alive, paused, bag, started;
 
 function newBag() {
   const b = KEYS.slice();
@@ -169,6 +172,12 @@ function endGame() {
   updateUI();
 }
 
+function getGhostY() {
+  let gy = piece.y;
+  while (!collide(piece, 0, gy - piece.y + 1)) gy++;
+  return gy;
+}
+
 function draw() {
   ctx.fillStyle = getCss('--surface');
   ctx.fillRect(0, 0, CSS_W, CSS_H);
@@ -184,6 +193,18 @@ function draw() {
   // Fijos
   for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++) {
     if (grid[r][c]) drawCell(c, r, grid[r][c]);
+  }
+  // Pieza fantasma (destino del drop)
+  if (piece && alive && started) {
+    const ghostY = getGhostY();
+    if (ghostY !== piece.y) {
+      ctx.globalAlpha = 0.22;
+      for (const [cx, cy] of piece.cells) {
+        const x = piece.x + cx, y = ghostY + cy;
+        if (y >= 0) drawCell(x, y, piece.color);
+      }
+      ctx.globalAlpha = 1;
+    }
   }
   // Pieza activa
   if (piece && alive) {
@@ -206,7 +227,7 @@ function getCss(name) {
 }
 
 function loop(t) {
-  if (alive && !paused) {
+  if (started && alive && !paused) {
     if (!last) last = t;
     if (t - last >= dropMs) {
       last = t;
@@ -220,7 +241,7 @@ function loop(t) {
 
 // Teclado
 window.addEventListener('keydown', (e) => {
-  if (!alive || paused) {
+  if (!started || !alive || paused) {
     if (['ArrowLeft','ArrowRight','ArrowUp','ArrowDown',' '].includes(e.key)) e.preventDefault();
     return;
   }
@@ -245,9 +266,12 @@ createDpad(document.getElementById('dpad'), (type, val) => {
   }
 }, { extra: [{ id: 'drop', label: 'Hard drop', text: '⇩' }] });
 
-document.getElementById('start').addEventListener('click', () => { reset(); });
+document.getElementById('start').addEventListener('click', () => {
+  started = true;
+  reset();
+});
 document.getElementById('pause').addEventListener('click', () => {
-  if (!alive) return;
+  if (!started || !alive) return;
   paused = !paused;
   msgEl.textContent = paused ? 'Pausa' : '';
   last = 0;
@@ -255,5 +279,9 @@ document.getElementById('pause').addEventListener('click', () => {
 
 window.addEventListener('resize', fit);
 fit();
-reset();
+started = false;
+grid = Array.from({ length: ROWS }, () => Array(COLS).fill(null));
+alive = false;
+piece = null;
+msgEl.textContent = 'Pulsa Iniciar para comenzar';
 requestAnimationFrame(loop);

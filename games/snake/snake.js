@@ -1,7 +1,7 @@
 import { initTheme } from '../../assets/js/theme.js';
 import { initSound, sfx } from '../../assets/js/sound.js';
 import { getHighScore, setHighScore } from '../../assets/js/storage.js';
-import { onArrowKeys, onSwipe } from '../../assets/js/input.js';
+import { onArrowKeys, onSwipe, createDpad } from '../../assets/js/input.js';
 
 initTheme();
 initSound();
@@ -28,7 +28,7 @@ function fitCanvas() {
 }
 let CSS_SIZE = 400, CELL = 20;
 
-let snake, dir, nextDir, food, score, alive, tickMs, last, paused;
+let snake, dir, nextDir, food, score, alive, tickMs, last, paused, started;
 
 function reset() {
   snake = [{ x: 10, y: 10 }, { x: 9, y: 10 }, { x: 8, y: 10 }];
@@ -141,7 +141,7 @@ function parseHex(c) {
 
 function loop(t) {
   if (!last) last = t;
-  if (alive && !paused && t - last >= tickMs) {
+  if (started && alive && !paused && t - last >= tickMs) {
     last = t;
     step();
   }
@@ -159,15 +159,24 @@ function setDir(d) {
 
 onArrowKeys((d) => setDir(d));
 onSwipe(canvas, (d) => setDir(d));
+createDpad(document.getElementById('dpad'), (type, val) => {
+  if (type === 'dir') setDir(val);
+});
 
-document.getElementById('start').addEventListener('click', () => { reset(); });
+document.getElementById('start').addEventListener('click', () => {
+  started = true;
+  reset();
+});
 document.getElementById('pause').addEventListener('click', () => {
-  if (!alive) return;
+  if (!started || !alive) return;
   paused = !paused;
   msgEl.textContent = paused ? 'Pausa' : '';
 });
 
 window.addEventListener('resize', fitCanvas);
 fitCanvas();
+started = false;
 reset();
+alive = false; // espera a que el usuario pulse Iniciar
+msgEl.textContent = 'Pulsa Iniciar para comenzar';
 requestAnimationFrame(loop);
